@@ -12,8 +12,7 @@
 
 Six small but production-style automation scripts grouped by language. Every
 script uses structured logging, proper argument parsing, and meaningful exit
-codes — the boring fundamentals that turn a "tutorial script" into something
-you'd actually run in production.
+codes.
 
 | Script | Purpose |
 |---|---|
@@ -21,7 +20,7 @@ you'd actually run in production.
 | `bash/service_monitor.sh` | Check a systemd service, alert to Slack, optionally auto-restart |
 | `bash/disk_usage_alert.sh` | Warn when filesystems cross a usage threshold |
 | `python/log_cleaner.py` | Archive log files older than N days (with gzip compression) |
-| `python/log_parser.py` | Parse Nginx/Apache access logs — top IPs, URLs, status codes |
+| `python/log_parser.py` | Parse Nginx/Apache access logs: top IPs, URLs, status codes |
 | `python/ec2_inventory.py` | List EC2 instances across regions (real AWS or LocalStack) |
 
 ## Architecture
@@ -204,12 +203,10 @@ A few things I'd carry forward into bigger DevOps work:
 
 ## Requirements
 
-- VirtualBox 7+ and Vagrant 2.4+ (free)
+- VMware Fusion
+- Vagrant 2.4+ 
 - Python 3.10+ on the host (only needed to run tests outside the VM)
 - Docker (optional, only for LocalStack)
-
-Apple Silicon users: VirtualBox now supports M1/M2 in beta, or use Multipass —
-see [`docs/setup.md`](docs/setup.md).
 
 ## License
 
