@@ -203,10 +203,15 @@ A few things I'd carry forward into bigger DevOps work:
 
 ## Requirements
 
-- VMware Fusion
-- Vagrant 2.4+ 
-- Python 3.10+ on the host (only needed to run tests outside the VM)
-- Docker (optional, only for LocalStack)
+- **Vagrant 2.4+**
+- **One of the following hypervisors:**
+  - **VirtualBox 7+** — free, works on Linux, Windows, and Intel Mac
+  - **VMware Fusion** — free for personal use since 2024, works on Apple Silicon Mac
+- **Python 3.10+** on the host (only needed to run tests outside the VM)
+- **Docker** (optional, only for LocalStack)
+
+Vagrant auto-detects whichever hypervisor you have installed. See
+[`docs/setup.md`](docs/setup.md) for per-OS install instructions.
 
 ## License
 
