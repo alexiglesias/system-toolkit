@@ -1,0 +1,12 @@
+services:
+  localstack:
+    image: localstack/localstack:3.8
+    container_name: sysadmin-toolkit-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=ec2,s3,iam
+      - DEFAULT_REGION=us-east-1
+      - DEBUG=0
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
