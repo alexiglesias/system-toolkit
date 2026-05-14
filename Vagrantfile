@@ -23,34 +23,56 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb, override|
     override.vm.box = "ubuntu/jammy64"
     vb.name = "sysadmin-toolkit"
-    vb.memory = 1024
-    vb.cpus = 1
+    vb.memory = 2048
+    vb.cpus = 2
     vb.customize ["modifyvm", :id, "--audio", "none"]
   end
 
   # ----- VMware Fusion provider (Apple Silicon) -----
   config.vm.provider "vmware_desktop" do |vmware, override|
-    override.vm.box = "spox/ubuntu-arm"
-    override.vm.box_version = "1.0.0"
-    vmware.gui = false
+    override.vm.box = "bento/ubuntu-22.04"
     vmware.allowlist_verified = true
-    vmware.memory = 1024
-    vmware.cpus = 1
+    vmware.memory = 2048
+    vmware.cpus = 2
   end
 
   # ----- Provisioning (runs for both providers) -----
   config.vm.provision "shell", inline: <<-SHELL
     set -euo pipefail
     export DEBIAN_FRONTEND=noninteractive
-    apt-get update -y
-    apt-get install -y git curl jq python3 python3-pip python3-venv nginx
+apt-get update -y
+  apt-get install -y \
+    git curl jq ca-certificates gnupg \
+    python3.10 python3.10-venv python3.10-dev \
+    python3-pip \
+    nginx
 
-    if [ ! -d /opt/toolkit-venv ]; then
-      python3 -m venv /opt/toolkit-venv
-      /opt/toolkit-venv/bin/pip install --upgrade pip
-      /opt/toolkit-venv/bin/pip install -r /vagrant/requirements.txt
-    fi
+  # ----- Install Docker from official repo -----
+  install -m 0755 -d /etc/apt/keyrings
+  if [ ! -f /etc/apt/keyrings/docker.gpg ]; then
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+      | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+  fi
 
+  UBUNTU_CODENAME=$(. /etc/os-release && echo "$VERSION_CODENAME")
+  ARCH=$(dpkg --print-architecture)
+
+  echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $UBUNTU_CODENAME stable" \
+    > /etc/apt/sources.list.d/docker.list
+
+  apt-get update -y
+  apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+  usermod -aG docker vagrant
+  systemctl enable --now docker
+
+  # ----- Python venv -----
+  if [ ! -d /opt/toolkit-venv ]; then
+    python3.10 -m venv /opt/toolkit-venv
+  fi
+  /opt/toolkit-venv/bin/pip install --upgrade pip
+  /opt/toolkit-venv/bin/pip install -r /vagrant/requirements-dev.txt
     chmod +x /vagrant/bash/*.sh
     systemctl enable --now nginx
   SHELL
