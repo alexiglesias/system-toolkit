@@ -27,10 +27,10 @@ codes.
 
 ```mermaid
 flowchart LR
-    HOST["☁️ host machine"]
+    HOST["host machine"]
 
     subgraph VM["VAGRANT VM"]
-        CRON["⏳ cron"]
+        CRON["cron"]
         BASH["bash / scripts<br/>user · service · disk"]
         PYTHON["python / scripts<br/>logs · EC2 inventory"]
     end
@@ -40,11 +40,11 @@ flowchart LR
     AWS["Real AWS"]
 
     HOST -->|vagrant up| CRON
-    CRON --> BASH
-    CRON --> PYTHON
-    BASH --> SLACK
-    PYTHON --> LS
-    PYTHON --> AWS
+    CRON -->|scheduled| BASH
+    CRON -->|scheduled| PYTHON
+    BASH -->|optional| SLACK
+    PYTHON -->|optional| LS
+    PYTHON -->|optional| AWS
 
     classDef bash   fill:#fff0e6,stroke:#e65100,color:#bf360c
     classDef py     fill:#f1f8e9,stroke:#43a047,color:#1b5e20
