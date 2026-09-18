@@ -1,6 +1,6 @@
-# -*- mode: ruby -*-
+# -*- mode: ruby -*- 
 # vi: set ft=ruby :
-
+#
 # Vagrantfile for the sysadmin-toolkit lab VM.
 #
 # Supports two providers:
@@ -40,8 +40,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     set -euo pipefail
     export DEBIAN_FRONTEND=noninteractive
-apt-get update -y
-  apt-get install -y \
+    apt-get update 
+    apt-get install -y \
     git curl jq ca-certificates gnupg \
     python3.10 python3.10-venv python3.10-dev \
     python3-pip \

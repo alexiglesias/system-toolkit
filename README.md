@@ -27,18 +27,45 @@ codes.
 
 ```mermaid
 flowchart LR
-    Host[Host machine] -->|vagrant up| VM[Ubuntu 22.04 VM<br/>192.168.56.10]
+    HOST["☁️ host machine"]
 
-    subgraph VM[Vagrant VM]
-        Bash[bash/ scripts<br/>user, service, disk]
-        Python[python/ scripts<br/>logs, EC2 inventory]
-        Cron[cron] -.->|scheduled| Bash
-        Cron -.->|scheduled| Python
+    subgraph VM["VAGRANT VM"]
+        CRON["⏳ cron"]
+        BASH["bash / scripts<br/>user · service · disk"]
+        PYTHON["python / scripts<br/>logs · EC2 inventory"]
     end
 
-    Python -->|boto3| LS[LocalStack<br/>localhost:4566]
-    Python -.->|boto3| AWS[Real AWS]
-    Bash -->|optional| Slack[Slack webhook]
+    SLACK["Slack webhook"]
+    LS["LocalStack"]
+    AWS["Real AWS"]
+
+    HOST -->|vagrant up| CRON
+    CRON --> BASH
+    CRON --> PYTHON
+    BASH --> SLACK
+    PYTHON --> LS
+    PYTHON --> AWS
+
+    classDef bash   fill:#fff0e6,stroke:#e65100,color:#bf360c
+    classDef py     fill:#f1f8e9,stroke:#43a047,color:#1b5e20
+    classDef slack  fill:#fffde7,stroke:#f9a825,color:#5d4037
+    classDef cloud  fill:#7b1fa2,stroke:#6a1b9a,color:#ffffff
+    classDef host   fill:#e8f5e9,stroke:#388e3c,color:#1b5e20
+    classDef cron   fill:#f5f5f5,stroke:#9e9e9e,color:#424242
+
+    class HOST host
+    class CRON cron
+    class BASH bash
+    class PYTHON py
+    class SLACK slack
+    class LS,AWS cloud
+
+    linkStyle 0 stroke:#1976d2,stroke-dasharray:5 3
+    linkStyle 1 stroke:#9e9e9e
+    linkStyle 2 stroke:#9e9e9e
+    linkStyle 3 stroke:#e65100
+    linkStyle 4 stroke:#43a047
+    linkStyle 5 stroke:#43a047
 ```
 
 The VM is the runtime. LocalStack runs on the host (or inside the VM) and
