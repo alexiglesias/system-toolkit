@@ -153,19 +153,52 @@ $ AWS_ENDPOINT_URL=http://localhost:4566 \
 
 ## Scheduling with cron
 
-Most of these are designed to run on a schedule. Example crontab:
+Cron jobs are **automatically installed** during `vagrant up`. The schedule is defined in [`docs/crontab`](docs/crontab).
 
-```cron
-# Check nginx every 5 minutes, auto-restart, alert to Slack
-*/5 * * * * SLACK_WEBHOOK_URL=https://hooks.slack.com/... \
-    /vagrant/bash/service_monitor.sh --restart nginx
+To view active jobs:
+```bash
+vagrant ssh
+crontab -l
+```
 
-# Disk usage check every 15 minutes
-*/15 * * * * /vagrant/bash/disk_usage_alert.sh --threshold 85
+### Slack alerts (optional)
 
-# Archive old logs daily at 2am
-0 2 * * * /vagrant/python/log_cleaner.py \
-    --source /var/log/app --archive /var/log/app/archive --days 30
+If you want `service_monitor.sh` to post alerts to Slack, set your webhook URL before provisioning:
+
+**Option 1: Environment variable (persistent)**
+```bash
+# In your shell before vagrant up
+export SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+vagrant up
+```
+
+**Option 2: Edit the crontab file directly**
+```bash
+# Edit docs/crontab and add your webhook URL:
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+
+*/5 * * * * /vagrant/bash/service_monitor.sh --restart nginx
+```
+
+Then re-provision:
+```bash
+vagrant up --provision
+```
+
+Without a webhook URL, scripts still run normally—they just won't post to Slack.
+
+### View cron logs
+
+```bash
+vagrant ssh
+sudo tail -f /var/log/toolkit-*.log
+```
+
+### Modify the schedule
+
+Edit [`docs/crontab`](docs/crontab) and re-provision:
+```bash
+vagrant up --provision
 ```
 
 ## Testing

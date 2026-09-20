@@ -36,12 +36,13 @@ Vagrant.configure("2") do |config|
     vmware.cpus = 2
   end
 
-  # ----- Provisioning (runs for both providers) -----
-  config.vm.provision "shell", inline: <<-SHELL
-    set -euo pipefail
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update 
-    apt-get install -y \
+# ----- Provisioning (runs for both providers) -----
+config.vm.provision "shell", inline: <<-SHELL
+  set -euo pipefail
+  export DEBIAN_FRONTEND=noninteractive
+
+  apt-get update
+  apt-get install -y \
     git curl jq ca-certificates gnupg \
     python3.10 python3.10-venv python3.10-dev \
     python3-pip \
@@ -57,13 +58,11 @@ Vagrant.configure("2") do |config|
 
   UBUNTU_CODENAME=$(. /etc/os-release && echo "$VERSION_CODENAME")
   ARCH=$(dpkg --print-architecture)
-
   echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $UBUNTU_CODENAME stable" \
     > /etc/apt/sources.list.d/docker.list
 
   apt-get update -y
   apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-
   usermod -aG docker vagrant
   systemctl enable --now docker
 
@@ -73,7 +72,12 @@ Vagrant.configure("2") do |config|
   fi
   /opt/toolkit-venv/bin/pip install --upgrade pip
   /opt/toolkit-venv/bin/pip install -r /vagrant/requirements-dev.txt
-    chmod +x /vagrant/bash/*.sh
-    systemctl enable --now nginx
-  SHELL
-end
+
+  chmod +x /vagrant/bash/*.sh
+  systemctl enable --now nginx
+
+  # ----- Install cron jobs -----
+  crontab -u vagrant /vagrant/docs/crontab
+  echo "Cron jobs installed and active"
+SHELL
+

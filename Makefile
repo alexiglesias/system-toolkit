@@ -34,3 +34,12 @@ localstack-down:  ## Stop LocalStack
 clean:  ## Remove caches and build artifacts
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type d -name .pytest_cache -exec rm -rf {} +
+
+cron-status:
+	@vagrant ssh -c "crontab -l"
+
+cron-logs:
+	@vagrant ssh -c "sudo tail -f /var/log/toolkit-*.log"
+
+cron-edit:
+	@echo "Edit docs/crontab, then run: make vm-provision"

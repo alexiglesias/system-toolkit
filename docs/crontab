@@ -1,0 +1,14 @@
+# System Toolkit cron jobs
+# These are auto-provisioned by Vagrant
+
+# Check nginx every 5 minutes; auto-restart and alert to Slack
+*/5 * * * * /vagrant/bash/service_monitor.sh --restart nginx >> /var/log/toolkit-service-monitor.log 2>&1
+
+# Disk usage check every 15 minutes
+*/15 * * * * /vagrant/bash/disk_usage_alert.sh --threshold 85 >> /var/log/toolkit-disk-alert.log 2>&1
+
+# Archive old logs daily at 2am
+0 2 * * * /vagrant/python/log_cleaner.py --source /var/log/app --archive /var/log/app/archive --days 30 >> /var/log/toolkit-cleaner.log 2>&1
+
+# Parse logs daily at 3am
+0 3 * * * /vagrant/python/log_parser.py --log /var/log/nginx/access.log >> /var/log/toolkit-parser.log 2>&1
