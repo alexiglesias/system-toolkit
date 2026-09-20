@@ -201,6 +201,29 @@ Edit [`docs/crontab`](docs/crontab) and re-provision:
 vagrant up --provision
 ```
 
+## LocalStack and AWS: Seamless transition
+
+All scripts work identically against LocalStack or real AWS. To pivot between them just change the endpoint:
+
+### LocalStack (free, local)
+```bash
+AWS_ENDPOINT_URL=http://localhost:4566 \
+AWS_ACCESS_KEY_ID=test \
+AWS_SECRET_ACCESS_KEY=test \
+python3 python/ec2_inventory.py --regions us-east-1
+```
+
+### Production (Real AWS)
+```bash
+# Point to real AWS 
+AWS_ACCESS_KEY_ID=AKIA... \
+AWS_SECRET_ACCESS_KEY=... \
+AWS_DEFAULT_REGION=us-east-1 \
+python3 python/ec2_inventory.py --regions us-east-1 us-west-2
+```
+
+Same code, same API calls, zero environment-specific logic. This is the pattern for safe cloud automation.
+
 ## Testing
 
 24 tests covering the Python scripts, with moto mocking the AWS calls so the
@@ -242,24 +265,6 @@ sysadmin-toolkit/
     ├── setup.md
     └── best-practices.md
 ```
-
-## What I learned
-
-A few things I'd carry forward into bigger DevOps work:
-
-- **`set -euo pipefail` is non-negotiable** in any Bash script you'd schedule.
-  Silent failures in cron are how you end up not noticing a service has been
-  down for three days.
-- **Exit codes matter.** Cron and monitoring systems read them. Returning `0`
-  on partial failure is a lie that propagates.
-- **Structured log lines** (ISO timestamp + level + message) cost nothing extra
-  to write and make `grep`-based postmortems trivial.
-- **LocalStack is the right learning environment** for boto3 — same code path,
-  zero cost, zero risk of leaving an EC2 instance running over the weekend.
-- **`moto` over LocalStack for unit tests.** Faster, no external service, runs
-  in CI without Docker.
-- **A README that opens with a diagram and a usage table** is read in 30
-  seconds. A README that opens with "this script does X" is closed in 5.
 
 ## Requirements
 
