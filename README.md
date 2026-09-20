@@ -23,6 +23,18 @@ codes.
 | `python/log_parser.py` | Parse Nginx/Apache access logs: top IPs, URLs, status codes |
 | `python/ec2_inventory.py` | List EC2 instances across regions (real AWS or LocalStack) |
 
+## Requirements
+
+- **Vagrant 2.4+**
+- **One of the following hypervisors:**
+  - **VirtualBox 7+** ?~@~T free, works on Linux, Windows, and Intel Mac
+  - **VMware Fusion** ?~@~T free for personal use since 2024, works on Apple Silicon Mac
+- **Python 3.10+** on the host (only needed to run tests outside the VM)
+- **Docker** (optional, only for LocalStack)
+
+Vagrant auto-detects whichever hypervisor you have installed. See
+[`docs/setup.md`](docs/setup.md) for per-OS install instructions.
+
 ## Architecture
 
 ```mermaid
@@ -218,36 +230,24 @@ sysadmin-toolkit/
 ├── Vagrantfile            # VirtualBox-based Ubuntu VM (free, cross-platform)
 ├── docker-compose.yml     # LocalStack for AWS emulation
 ├── Makefile               # vm-up, test, localstack-up, ...
-├── requirements.txt
-├── requirements-dev.txt
+├── requirements.txt       # Python dependencies (pip install)
+├── requirements-dev.txt   # Dev dependencies (pytest, linters, etc.)
 ├── bash/
-│   ├── user_manager.sh
-│   ├── service_monitor.sh
-│   └── disk_usage_alert.sh
+│   ├── user_manager.sh    # Add/remove/list system users with sudo control
+│   ├── service_monitor.sh # Monitor service status + restart on failure
+│   └── disk_usage_alert.sh # Alert when disk usage exceeds threshold
 ├── python/
-│   ├── log_cleaner.py
-│   ├── log_parser.py
-│   └── ec2_inventory.py
+│   ├── log_cleaner.py     # Archive/delete old logs by age
+│   ├── log_parser.py      # Parse logs + extract errors/warnings
+│   └── ec2_inventory.py   # List AWS EC2 instances + generate inventory
 ├── tests/
-│   ├── test_log_cleaner.py
-│   ├── test_log_parser.py
-│   └── test_ec2_inventory.py
+│   ├── test_log_cleaner.py   # Unit tests for log cleanup logic
+│   ├── test_log_parser.py    # Unit tests for log parsing
+│   └── test_ec2_inventory.py # Integration tests for AWS API calls
 └── docs/
-    ├── crontab
-    └── setup.md
+    ├── crontab            # Crontab entries for scheduled tasks
+    └── setup.md           # Installation + usage guide
 ```
-
-## Requirements
-
-- **Vagrant 2.4+**
-- **One of the following hypervisors:**
-  - **VirtualBox 7+** — free, works on Linux, Windows, and Intel Mac
-  - **VMware Fusion** — free for personal use since 2024, works on Apple Silicon Mac
-- **Python 3.10+** on the host (only needed to run tests outside the VM)
-- **Docker** (optional, only for LocalStack)
-
-Vagrant auto-detects whichever hypervisor you have installed. See
-[`docs/setup.md`](docs/setup.md) for per-OS install instructions.
 
 ## License
 
