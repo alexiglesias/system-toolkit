@@ -262,8 +262,8 @@ sysadmin-toolkit/
 │   ├── test_log_parser.py
 │   └── test_ec2_inventory.py
 └── docs/
-    ├── setup.md
-    └── best-practices.md
+    ├── crontab
+    └── setup.md
 ```
 
 ## Requirements
