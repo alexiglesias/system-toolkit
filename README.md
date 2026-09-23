@@ -27,8 +27,8 @@ codes.
 
 - **Vagrant 2.4+**
 - **One of the following hypervisors:**
-  - **VirtualBox 7+** ?~@~T free, works on Linux, Windows, and Intel Mac
-  - **VMware Fusion** ?~@~T free for personal use since 2024, works on Apple Silicon Mac
+  - **VirtualBox 7+** - free, works on Linux, Windows, and Intel Mac
+  - **VMware Fusion** - free for personal use since 2024, works on Apple Silicon Mac
 - **Python 3.10+** on the host (only needed to run tests outside the VM)
 - **Docker** (optional, only for LocalStack)
 
