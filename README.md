@@ -251,4 +251,4 @@ sysadmin-toolkit/
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+[MIT](./LICENSE)
